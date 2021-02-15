@@ -42,9 +42,9 @@ Roadmap: <br/>
 ## practical links
 
 ### Practical 1 <br/>
-<br/>[Question 7](./data/college-example.R)
-<br/>[Question 8](.data/introduction_to.R)
-<br/>[Question 9](.data/Boston-example.R) <br/>
+<br/>[Question 7](https://github.com/vetpsk/machine-learning-FTE-WUR/blob/main/data/college%20example.R)
+<br/>[Question 8](https://github.com/vetpsk/machine-learning-FTE-WUR/blob/main/data/introduction_to.R)
+<br/>[Question 9](https://github.com/vetpsk/machine-learning-FTE-WUR/blob/main/data/Boston%20example.R) <br/>
 
 ### Practical 2 <br/>
 
