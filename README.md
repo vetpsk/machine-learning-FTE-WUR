@@ -1,7 +1,7 @@
 # machine-learning-FTE-WUR
 ## Codes from course ML (FTE-35306)
-
-After successful completion of this course, students are able to
+[Go to links to practicals from Book: Introduction to statistical learning in R](#practical-links)
+<br/>After successful completion of this course, students are able to
      
      •. clearly explain machine learning problems, algorithms, and their formulas,
      
@@ -38,3 +38,5 @@ Roadmap: <br/>
      Web lecture 10: Clustering
 
      Web lecture 11: Neural networks
+     
+## practical links
