@@ -10,3 +10,31 @@ After successful completion of this course, students are able to
      •. qualitatively  and  quantitatively  compare  the  characteristics,  (dis)advantages,  formulas,  andperformance of a number of key algorithms, and
      
      •. design and implement e ective solutions based on chosen algorithms, to solve practical prob-lems
+
+
+Roadmap: <br/>
+     1.  Week 1: Linear regression, Logistic Regression, Bayesian classification <br/>
+     2.  Week 2: Resampling, Model selection & regularization, Support vector machines, Trees and forests <br/>
+     3.  Week 3: Unsupervised learning, Clustering, Neural networks <br/>
+ 
+     Web lecture 1: Introduction
+ 
+     Web lecture 2: Linear regression
+ 
+     Web lecture 3: Logistic regression
+
+     Web lecture 4: Bayesian classification
+
+     Web lecture 5: Sampling
+
+     Web lecture 6: Model selection and regularization
+
+     Web lecture 7: Support vector machines
+
+     Web lecture 8: Trees and forests
+
+     Web lecture 9: Unsupervised learning
+
+     Web lecture 10: Clustering
+
+     Web lecture 11: Neural networks
