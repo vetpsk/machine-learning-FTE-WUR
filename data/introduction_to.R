@@ -154,24 +154,25 @@ A[-c(1, 3), -c(1, 3, 4), drop=FALSE]
 #
 # SHOW DATA IN TEXT FILE FIRST
 #
-Auto = read.table("Auto.data")
-fix(Auto)
+Auto <-  read.table("./data/Auto.data")
+# fix(Auto)
 # Interpret first row as header,
 # interpret "?" as NA (not applicable)
-Auto = read.table("Auto.data", header=TRUE,
+Auto <-  read.table("Auto.data", header=TRUE,
                   na.strings="?")
-fix(Auto)
+# fix(Auto)
 
 # Before you do this, you can look at the data in a text editor.
-Auto = read.csv("Auto.csv", header=TRUE,
+Auto <- read.csv("./data/Auto.csv", header=TRUE,
                 na.strings="?")
-fix(Auto)
+# fix(Auto)
 dim(Auto)
 Auto [1:4, ]
 # Omit rows containing NA (not applicable)
-Auto = na.omit(Auto)
+Auto <-  na.omit(Auto)
 dim(Auto)
 names(Auto)
+str(Auto)
 
 ## ==== Sec. 2.3.5 Additional Graphical and Numerical Summaries ====================
 
@@ -213,6 +214,25 @@ identify(horsepower, mpg, name)
 
 summary(Auto)
 summary(mpg)
+
+Auto$year <- as.factor(Auto$year)
+Auto$origin <- as.factor(Auto$origin)
+Auto$cylinders <- as.factor(Auto$cylinders)
+
+sapply(Auto[,c(1, 3:6)], range,USE.NAMES = T)
+sapply(Auto[,c(1, 3:6)], mean, USE.NAMES = T)
+sapply(Auto[,c(1, 3:6)], sd, USE.NAMES = T)
+
+sub_Auto <- Auto[-c(10:85),] 
+summary(sub_Auto)
+
+
+pairs(Auto[,c(1, 3:6)])
+par(mfrow = c(2,2))
+for (i in c(2,7:8)) {
+  for (j in c(1,3:6)) plot(Auto[[j]] ~ Auto[[i]], xlab = names(Auto[j]), ylab = names(Auto[i]))
+}
+
 
 # When exiting RStudio, we have the option to
 # save the current workspace so that all objects
