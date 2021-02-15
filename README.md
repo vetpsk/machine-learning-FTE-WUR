@@ -1,6 +1,5 @@
 # machine-learning-FTE-WUR
 ## Codes from course ML (FTE-35306)
-<br/>
 [Go to links to practicals from Book: Introduction to statistical learning in R](#practical-links)
 <br/><br/>After successful completion of this course, students are able to
      
