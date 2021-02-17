@@ -1,0 +1,124 @@
+---
+title: "Excercise 3: Logistic regression"
+output: 
+  html_document: 
+    keep_md: true 
+    code_folding: hide 
+---
+
+##  1. Load data
+  
+##  2. Correlations in data
+  
+```{r}
+library(ISLR)
+library(corrplot)
+
+data("Smarket")
+names(Smarket)
+summary(Smarket)
+cor(Smarket[,-9])
+corrplot(cor(Smarket[,-9]), method = "number", type = "upper")
+
+```
+
+##  3. plot Volume
+  
+```{r}
+par(mfrow = c(1,2))
+plot(Smarket$Volume)
+plot(Smarket$Volume~ as.factor(Smarket$Year), xlab = "Year", ylab = "Volume")
+
+```
+  
+##  4. Fit glm() with logistic regression 
+### (Y = Direction, X = Lag[1-5], Volume)
+  
+```{r}
+glm.fit = glm(Direction ~ 
+                Lag1 + Lag2 +Lag3 +Lag4 +Lag5 +Volume,
+              data = Smarket, 
+              family = binomial)
+summary(glm.fit)
+coef(glm.fit)
+cat("following is p-values column")
+summary(glm.fit)$coef[,4]
+
+```
+  
+##  5. Predict probabilities for Direction (1 = up, 2 = down)
+###  Type = "response" [P(Y = 1|X)]
+  
+##  6. Make predictions for Up and down separately
+  
+##  7. Create confusion matrix 
+### (correctly or incorrectly classified directions in predictions)
+
+```{r}
+contrasts(Smarket$Direction)
+
+glm.prob = predict(glm.fit, type = "response")
+glm.prob[1:10]
+glm.pred <- rep("Down", length(glm.prob))
+glm.pred[glm.prob > .5] <- "Up"
+knitr::kable(table(glm.pred, Smarket$Direction), caption = "confusion matrix")
+cat(paste0("correct predictions = ", (507+145)/1250))
+mean(glm.pred == Smarket$Direction)
+cat(paste0("training error rate  = [100 - 52.2]% = ", 100-52.2, "%"))
+```
+  
+##  8. Split data in training and test
+  
+```{r}
+train = (Smarket$Year < 2005)
+Smarket_2005 <- Smarket[!train,]
+Direction_2005 <- Smarket$Direction[!train]
+```
+  
+##  9. glm() fit using subset
+  
+##  10. Look at predictions on test
+  
+```{r}
+glm.fit2 <- glm(Direction ~
+                  Lag1 + Lag2 + Lag3 + Lag4 + Lag5 + Volume,
+                data = Smarket, subset = train, 
+                family = binomial)
+
+glm.prob2 <- predict(glm.fit2, Smarket_2005, type = "response")
+glm.pred2 <- rep("Down", length(glm.prob2))
+glm.pred2[glm.prob2 > 0.5] <- "Up"
+knitr::kable(table(glm.pred2, Direction_2005), caption = "prediction error")
+cat(paste0("the prediction accuracy on test = ", mean(glm.pred2 == Direction_2005)))
+cat(paste0("the test error rate = ", mean(glm.pred2 != Direction_2005)))
+```
+  
+##  11. Refit glm() with only `Lag1` and `Lag2`
+
+```{r}
+glm.fit3=glm(Direction~ 
+             Lag1+Lag2,
+             data=Smarket, subset=train, 
+             family=binomial)
+summary(glm.fit3)
+glm.prob3=predict(glm.fit3,Smarket_2005,type="response")
+glm.pred3=rep("Down",252)
+glm.pred3[glm.prob3>.5]="Up"
+knitr::kable(table(glm.pred3,Direction_2005), caption = "prediction error")
+cat(paste0("prediction accuracy on test = ", mean(glm.pred3==Direction_2005)))
+cat(paste0("true positives for Up = ", 106/(106+76)))
+```
+  
+##  12. Predict Direction 
+### when `Lag1 = 1.2,1.5` and `Lag2 = 1.1,-0.8`
+  
+```{r}
+data.frame(Lag1 = c(1.2,1.5), Lag2 = c(1.1,-0.8))
+predict3 <- predict(glm.fit3,
+        newdata = data.frame(Lag1 = c(1.2,1.5), Lag2 = c(1.1,-0.8)), 
+        type = "response")
+cbind(data.frame(Lag1 = c(1.2,1.5), Lag2 = c(1.1,-0.8)), pred = predict3)
+
+```
+  
+  

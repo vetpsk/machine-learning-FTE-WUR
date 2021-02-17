@@ -1,0 +1,79 @@
+---
+title: "Logistic Regression part 2"
+author: "P Kulkarni"
+date: "2/17/2021"
+output: 
+  html_document: 
+    keep_md: true
+    code_folding: hide 
+    df_print: kable
+---
+
+## Exercise (section 4.2, ISLR book)
+
+### 1. load weekly data set and get descriptives
+```{r}
+library(ISLR)
+library(corrplot)
+library(knitr)
+
+data("Weekly")
+
+Weekly[1:10,]
+
+summary(Weekly)
+corrplot(cor(Weekly[,1:8]), method = "number", type = "upper")
+pairs(Weekly[,c("Year", "Volume", "Direction")])
+
+plot(Weekly$Volume ~ as.factor(Weekly$Year), xlab = "Year", ylab = "Volume")
+
+```
+
+### 2. glm() logistic regression
+
+```{r}
+fit1 <- glm(Direction~
+              Lag1 + Lag2 + Lag3 + Lag4 + Lag5 + Volume, 
+            data = Weekly,
+            family = binomial)
+summary(fit1)
+kable(summary(fit1)$coef)
+kable(summary(fit1)$coef[3,],col.names = "Lag2")
+
+```
+
+### 3. Predictions and confusion matrix
+
+```{r}
+prob1 <- predict(fit1, type = "response")
+pred <- rep("Down", length(prob1))
+pred[prob1 > 0.5] <- "Up"
+kable(table(pred, Weekly$Direction))
+
+cat(paste0("prediction accuracy = ", (54+557)/1089))
+```
+
+### 4. Fit glm() using `Lag2` only
+
+```{r}
+fit2 <- glm(Direction~
+              Lag2, 
+            data = Weekly,
+            family = binomial)
+summary(fit2)
+kable(summary(fit2)$coef)
+kable(data.frame(fit1 = summary(fit1)$coef[3,4], fit2 = summary(fit2)$coef[2,4], row.names = "p-values"),
+      caption = "change in probabilities of Lag2", digits = 4)
+```
+
+### 5. Predictions and confusion matrix for `fit2`
+
+```{r}
+prob2 <- predict(fit2, type = "response")
+pred2 <- rep("Down", length(prob2))
+pred2[prob2 > 0.5] <- "Up"
+kable(table(pred2, Weekly$Direction))
+
+cat(paste0("prediction accuracy = ", mean(pred2 == Weekly$Direction)))
+boxplot(prob2~pred2)
+abline(h=0.5,col = "red", lwd = 2, lty = 3)
