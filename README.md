@@ -48,3 +48,11 @@ Roadmap: <br/>
 
 ### Practical 2 <br/>
 
+#### Something went wrong!
+
+### Practical 3 <br/>
+<br/>[Smarket Logistic exercise](https://github.com/vetpsk/machine-learning-FTE-WUR/blob/main/data/Smarket_logistic.md)
+<br/>[Pen-paper LogLikelihood example](https://github.com/vetpsk/machine-learning-FTE-WUR/blob/main/data/loglik%20for%20logistic.pdf)
+<br/>[Weekly data exercise](https://github.com/vetpsk/machine-learning-FTE-WUR/blob/main/data/logistic-regression-part-2.md) <br/>
+
+### Practical 4
