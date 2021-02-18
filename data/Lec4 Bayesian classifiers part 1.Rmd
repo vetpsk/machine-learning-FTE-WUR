@@ -1,0 +1,133 @@
+---
+title: "Lec 4 Bayesian classifiers"
+author: "P Kulkarni"
+date: "2/18/2021"
+output: 
+  html_document: 
+    keep_md: true 
+    df_print: kable
+---
+
+## 1. LDA on Smarket
+
+```{r}
+library(MASS)
+library(ISLR)
+data("Smarket")
+
+train <- (Smarket$Year < 2005)
+
+lda.fit <- lda(Direction~
+                 Lag1 + Lag2,
+               data = Smarket, subset = train)
+lda.fit
+plot(lda.fit)
+Smarket.2005 <- Smarket[!train,]
+lda.pred <- predict(lda.fit, Smarket.2005)
+lda.class <- lda.pred$class
+table(lda.class, Smarket.2005$Direction)
+mean(lda.class == Smarket.2005$Direction)
+sum(lda.pred$posterior[,1]>= 0.5)
+sum(lda.pred$posterior[,1]< 0.5)
+data.frame(posterior = lda.pred$posterior[1:20,1],
+            pred_class = lda.pred$class[1:20], 
+           row.names = NULL)
+
+
+```
+## 2. QDA on Smarket data
+
+```{r}
+qda.fit <- qda(Direction ~
+                 Lag1 + Lag2,
+               data = Smarket, subset = train)
+qda.fit
+qda.class <- predict(qda.fit,Smarket.2005)$class
+table(qda.class, Smarket.2005$Direction)
+mean(qda.class == Smarket.2005$Direction)
+
+cat("testing lda against qda")
+table(lda.class,qda.class)
+```
+
+## 3. KNN on Smarket
+
+```{r}
+library(class)
+train.X <- cbind(Smarket$Lag1, Smarket$Lag2)[train,]
+test.X <- cbind(Smarket$Lag1, Smarket$Lag2)[!train,]
+train.Direction <- Smarket$Direction[train]
+set.seed(1)
+knn.pred <- knn(train.X, test.X, train.Direction, k=1)
+table(knn.pred, Smarket.2005$Direction)
+(83+43)/252
+knn.pred <- knn(train.X, test.X, train.Direction, k=3)
+table(knn.pred, Smarket.2005$Direction)
+mean(knn.pred == Smarket.2005$Direction)
+
+```
+
+## 4. KNN to Caravan data
+
+```{r}
+rm(list = ls())
+dim(Caravan)
+attach(Caravan)
+
+summary(Purchase)
+348/5822
+standardized.X <- scale(Caravan[,-86])
+var(Caravan[,2])
+var(standardized.X[,1])
+var(standardized.X[,2])
+test <- 1:1000
+train.X <- standardized.X[-test,]
+test.X <- standardized.X[test,]
+train.Y <- Purchase[-test]
+test.Y <- Purchase[test]
+set.seed(1)
+knn.pred <- knn(train.X, test.X, train.Y, k = 1)
+mean(test.Y != knn.pred)
+mean(test.Y!= "No")
+table(knn.pred, test.Y)
+9/(68+9)
+
+knn.pred <- knn(train.X, test.X, train.Y, k = 3)
+mean(test.Y != knn.pred)
+table(knn.pred, test.Y)
+5/26
+
+knn.pred <- knn(train.X, test.X, train.Y, k = 5)
+mean(test.Y != knn.pred)
+table(knn.pred, test.Y)
+4/15
+
+detach("Caravan")
+```
+
+## 5. Logit on Caravan
+
+```{r, echo=T, eval=FALSE}
+> glm.fits=glm(Purchase∼.,data=Caravan,family=binomial, subset=-test)
+Warning message:
+glm.fits: fitted probabilities numerically 0 or 1 occurred
+> glm.probs=predict(glm.fits,Caravan[test,],type="response") > glm.pred=rep("No",1000)
+> glm.pred[glm.probs>.5]="Yes"
+> table(glm.pred,test.Y)
+
+          test.Y 
+glm.pred No   Yes 
+      No 934  59 
+      Yes 7   0
+      
+> glm.pred=rep("No",1000)
+> glm.pred[glm.probs>.25]="Yes" > table(glm.pred,test.Y)
+          test.Y 
+glm.pred  No    Yes 
+      No  919   48 
+      Yes 22    11
+      
+> 11/(22+11) 
+[1] 0.333
+```
+

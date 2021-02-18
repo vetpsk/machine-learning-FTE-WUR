@@ -1,0 +1,127 @@
+---
+title: "Lec 4 Bayesian classifiers part 2"
+author: "P Kulkarni"
+date: "2/18/2021"
+output: 
+  html_document: 
+    keep_md: true 
+    df_print: kable 
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(knitr)
+```
+
+## 1. Ex 10 -- Weekly data
+
+```{r}
+library(ISLR)
+library(MASS)
+library(class)        
+
+data("Weekly")
+train <- Weekly$Year <= 2000
+
+lda.fit <- lda(Direction ~
+                 Lag2, data = Weekly, subset = train)
+lda.fit
+plot(lda.fit)
+
+lda.pred <- predict(lda.fit, newdata = Weekly[!train,])$class
+table(lda.pred, Weekly[!train,]$Direction)
+
+qda.fit <- qda(Direction ~
+                 Lag2, data = Weekly, subset = train)
+qda.fit
+
+qda.pred <- predict(qda.fit, newdata = Weekly[!train,])$class
+table(qda.pred, Weekly[!train,]$Direction)
+
+std_weekly <- scale(Weekly[,-c(1,9)])
+train.x <- as.matrix(Weekly$Lag2[train])
+test.x <- as.matrix(Weekly$Lag2[!train])
+train.y <- as.matrix(Weekly$Direction[train])
+test.y <- as.matrix(Weekly$Direction[!train])
+
+knn.fit <- knn(train.x, test.x, train.y, k = 1)
+
+kable(list(
+knn = table(knn.fit, test.y),
+lda = table(lda.pred, Weekly[!train,]$Direction),
+qda = table(qda.pred, Weekly[!train,]$Direction)
+), caption = "Confusion matrix (1) KNN (2) LDA (3) QDA")
+```
+## 2. example 13 -- Boston data
+
+```{r}
+rm(list = ls())
+data("Boston")
+summary(Boston)
+Boston$crime_class <- rep("below", length(Boston$crim))
+Boston$crime_class[Boston$crim > median(Boston$crim)] <- "above"
+Boston$crime_class <- as.factor(Boston$crime_class)
+summary(Boston$crime_class)
+
+train_vector <- 1:250
+train.x <- Boston[train_vector, -c(1,15)]
+test.x <- Boston[-train_vector, -c(1,15)]
+train.y <- Boston$crime_class[train_vector]
+test.y <- Boston$crime_class[-train_vector]
+
+knn.fit <- knn(train.x, test.x, train.y, k= 1)
+table(knn.fit, test.y)
+
+## lda
+train.x <- Boston[train_vector,]
+test.x <- Boston[-train_vector,]
+lda.fit <- lda(crime_class ~
+                 zn + indus + chas + nox + rm + age + dis + rad + 
+                 tax + ptratio + black + lstat + medv,
+               data = train.x)
+lda.fit
+lda.pred <- predict(lda.fit, newdata = test.x)$class
+table(lda.pred, test.x$crime_class)
+
+## qda
+
+qda.fit <- qda(crime_class ~
+                 zn + indus + chas + nox + rm + age + dis + rad + 
+                 tax + ptratio + black + lstat + medv,
+               data = train.x)
+qda.fit
+
+qda.pred<- predict(qda.fit, newdata = test.x)$class
+table(qda.pred, test.x$crime_class)
+
+## logit
+
+glm.fit <- glm(crime_class ~
+                 zn + indus + chas + nox + rm + age + dis + rad + 
+                 tax + ptratio + black + lstat + medv,
+               data = train.x, family = binomial)
+summary(glm.fit)
+glm.prob <- predict(glm.fit, newdata = test.x, type = "response")
+glm.pred <- rep("below", length(test.x$crime_class))
+glm.pred[glm.prob > 0.5] <- "above"
+glm.pred <- as.factor(glm.pred)
+
+table(glm.pred, test.x$crime_class)
+
+kable(
+  list(table(knn.fit, test.y),
+    table(lda.pred, test.x$crime_class),
+    table(qda.pred, test.x$crime_class),
+    table(glm.pred, test.x$crime_class)
+  ), caption = "confusion matrices for 1. KNN, 2. LDA, 3. QDA, 4. Logistic"
+)
+data.frame(classifier = c("KNN", "LDA", "QDA", "Logit"),
+           test_error = rbind(mean(knn.fit != test.y),
+                              mean(lda.pred != test.x$crime_class),
+                              mean(qda.pred != test.x$crime_class),
+                              mean(glm.pred != test.x$crime_class)),
+           sensitivity = c(52/163, 139/163, 4/163, 24/163),
+           specificity = c(88/93, 83/93, 87/93, 22/93),
+           precision = c(52/57, 139/149, 4/10, 24/95))
+```
+
