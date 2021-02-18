@@ -55,4 +55,9 @@ Roadmap: <br/>
 <br/>[Pen-paper LogLikelihood example](https://github.com/vetpsk/machine-learning-FTE-WUR/blob/main/data/loglik%20for%20logistic.pdf)
 <br/>[Weekly data exercise](https://github.com/vetpsk/machine-learning-FTE-WUR/blob/main/data/logistic-regression-part-2.md) <br/>
 
-### Practical 4
+### Practical 4 <br/>
+<br/>[Lec-4 Part 1](https://github.com/vetpsk/machine-learning-FTE-WUR/blob/main/data/Lec4-Bayesian-classifiers-part-1.md)
+<br/>[Lec-4 Part 2](https://github.com/vetpsk/machine-learning-FTE-WUR/blob/main/data/Lec-4-Bayesian-classifiers-part-2.md) <br/>
+
+### Practical 5 <br/>
+
